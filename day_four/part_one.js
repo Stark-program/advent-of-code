@@ -69,14 +69,55 @@ To guarantee victory against the giant squid, figure out which board will win fi
         8. This number will be our answer. 
 */
 
+const { pseudoRandomBytes } = require("crypto");
 var fs = require("fs");
 
 require.extensions[".txt"] = function (module, filename) {
   module.exports = fs.readFileSync(filename, "utf8");
 };
 
-var words = require("./input.txt");
+var bingo_tables = require("./test_input.txt");
+var drawn_numbers = require("./test_numbers.txt");
 
-let data = words.split("\n");
+let bingo_boards = bingo_tables.split(/\n\s*\n/);
+let bingo_numbers = drawn_numbers.split(",");
+let bingo_boards_rows = [];
+let bingo_boards_columns = [];
 
-console.log(data);
+for (var i = 0; i < bingo_boards.length; i++) {
+  let board = bingo_boards[i];
+  let rows = board.split("\n").map((rowString) => {
+    rowString = rowString.trim();
+    rowString = rowString.replace(/  /g, " ");
+
+    return (rowString = rowString.split(" "));
+  });
+
+  bingo_boards_rows.push(rows);
+}
+
+for (var i = 0; i < 12; i++) {
+  let bingoNumber = bingo_numbers[i];
+  for (var j = 0; j < bingo_boards_rows.length; j++) {
+    let board = bingo_boards_rows[j];
+    board.forEach((row) => {
+      row.forEach((number) => {
+        if (number === bingoNumber) {
+          let bingoNumberIndex = row.indexOf(number);
+          row.splice(bingoNumberIndex, 1);
+          console.log(row, board);
+          //   console.log(
+          //     "this is the bingo Number: ",
+          //     bingoNumber,
+          //     "and this is the board its on: ",
+          //     board,
+          //     "and this is the row: ",
+          //     row,
+          //     "and this is the number: ",
+          //     number
+          //   );
+        }
+      });
+    });
+  }
+}
