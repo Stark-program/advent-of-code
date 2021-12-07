@@ -95,7 +95,7 @@ for (var i = 0; i < bingo_boards.length; i++) {
 
   bingo_boards_rows.push(rows);
 }
-
+console.log(bingo_boards_rows);
 for (var i = 0; i < 12; i++) {
   let bingoNumber = bingo_numbers[i];
   for (var j = 0; j < bingo_boards_rows.length; j++) {
@@ -105,17 +105,6 @@ for (var i = 0; i < 12; i++) {
         if (number === bingoNumber) {
           let bingoNumberIndex = row.indexOf(number);
           row.splice(bingoNumberIndex, 1);
-          console.log(row, board);
-          //   console.log(
-          //     "this is the bingo Number: ",
-          //     bingoNumber,
-          //     "and this is the board its on: ",
-          //     board,
-          //     "and this is the row: ",
-          //     row,
-          //     "and this is the number: ",
-          //     number
-          //   );
         }
       });
     });
