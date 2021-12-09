@@ -124,6 +124,17 @@ for (var i = 0; i < 12; i++) {
         if (number === bingoNumber) {
           let bingoNumberIndex = row.indexOf(number);
           row.splice(bingoNumberIndex, 1);
+
+          if (row.length === 0) {
+            let sum_unmarked = 0;
+            board.forEach((sum_row) => {
+              sum_row.forEach((sum_number) => {
+                sum_unmarked += parseInt(sum_number);
+              });
+            });
+            let final_score = bingoNumber * sum_unmarked;
+            return final_score;
+          }
         }
       });
     });
