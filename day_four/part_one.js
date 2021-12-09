@@ -95,7 +95,26 @@ for (var i = 0; i < bingo_boards.length; i++) {
 
   bingo_boards_rows.push(rows);
 }
-console.log(bingo_boards_rows);
+function transpose(original) {
+  var copy = [];
+
+  copy = new Array(original.length).fill([]);
+
+  for (var i = 0; i < original.length; ++i) {
+    for (var j = 0; j < original[i].length; ++j) {
+      copy[i] = new Array(original[i].length).fill([]);
+      for (var y = 0; y < original[i][j].length; ++y) {
+        let num = original[i][j][y];
+        let num_index = original[i][j].indexOf(num);
+        if (num_index == 0) {
+        }
+      }
+    }
+  }
+  return copy;
+}
+
+console.log(transpose(bingo_boards_rows));
 for (var i = 0; i < 12; i++) {
   let bingoNumber = bingo_numbers[i];
   for (var j = 0; j < bingo_boards_rows.length; j++) {
