@@ -76,8 +76,8 @@ require.extensions[".txt"] = function (module, filename) {
   module.exports = fs.readFileSync(filename, "utf8");
 };
 
-var bingo_tables = require("./test_input.txt");
-var drawn_numbers = require("./test_numbers.txt");
+var bingo_tables = require("./input.txt");
+var drawn_numbers = require("./numbers.txt");
 
 let bingo_boards = bingo_tables.split(/\n\s*\n/);
 let bingo_numbers = drawn_numbers.split(",");
@@ -95,48 +95,53 @@ for (var i = 0; i < bingo_boards.length; i++) {
 
   bingo_boards_rows.push(rows);
 }
-function transpose(original) {
-  var copy = [];
+function transpose(a) {
+  return Object.keys(a[0]).map(function (c) {
+    return a.map(function (r) {
+      return r[c];
+    });
+  });
+}
 
-  copy = new Array(original.length).fill([]);
-
-  for (var i = 0; i < original.length; ++i) {
-    for (var j = 0; j < original[i].length; ++j) {
-      copy[i] = new Array(original[i].length).fill([]);
-      for (var y = 0; y < original[i][j].length; ++y) {
-        let num = original[i][j][y];
-        let num_index = original[i][j].indexOf(num);
-        if (num_index == 0) {
-        }
-      }
+function run() {
+  let answer = 0;
+  for (var i = 0; i < bingo_numbers.length; i++) {
+    let bingoNumber = bingo_numbers[i];
+    for (var j = 0; j < bingo_boards_rows.length; j++) {
+      let board = bingo_boards_rows[j];
+      checkShit(board, bingoNumber);
+      let columns = transpose(board);
+      checkShit(columns, bingoNumber);
     }
   }
-  return copy;
+  return answer;
 }
 
-console.log(transpose(bingo_boards_rows));
-for (var i = 0; i < 12; i++) {
-  let bingoNumber = bingo_numbers[i];
-  for (var j = 0; j < bingo_boards_rows.length; j++) {
-    let board = bingo_boards_rows[j];
-    board.forEach((row) => {
-      row.forEach((number) => {
-        if (number === bingoNumber) {
-          let bingoNumberIndex = row.indexOf(number);
-          row.splice(bingoNumberIndex, 1);
+function checkShit(board, bingoNumber) {
+  board.forEach((row) => {
+    row.forEach((number) => {
+      if (number === bingoNumber) {
+        let bingoNumberIndex = row.indexOf(number);
+        row[bingoNumberIndex] = null;
 
-          if (row.length === 0) {
-            let sum_unmarked = 0;
-            board.forEach((sum_row) => {
-              sum_row.forEach((sum_number) => {
+        let hasItemsLeft = row.some((x) => x !== null);
+
+        if (!hasItemsLeft) {
+          let sum_unmarked = 0;
+          board.forEach((sum_row) => {
+            sum_row.forEach((sum_number) => {
+              if (sum_number !== null) {
                 sum_unmarked += parseInt(sum_number);
-              });
+              }
             });
-            let final_score = bingoNumber * sum_unmarked;
-            return final_score;
-          }
+          });
+          let final_score = bingoNumber * sum_unmarked;
+          answer = final_score;
+          throw new Error(answer);
         }
-      });
+      }
     });
-  }
+  });
 }
+// Answer: 10680
+console.log(run());
